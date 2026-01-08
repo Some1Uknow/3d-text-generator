@@ -33,7 +33,7 @@ const tabs = [
   { id: "text" as const, label: "Text" },
   { id: "material" as const, label: "Material" },
   { id: "scene" as const, label: "Scene" },
-  { id: "lighting" as const, label: "Lighting" },
+  { id: "lighting" as const, label: "Light" },
   { id: "export" as const, label: "Export" },
 ];
 
@@ -65,6 +65,76 @@ const environmentPresets = [
   { id: "city" as const, label: "City" },
 ];
 
+
+
+// Slider component with smooth styling
+function Slider({
+  label,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+  displayValue,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (value: number) => void;
+  displayValue?: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label className="text-sm font-medium text-gray-700">{label}</label>
+        <span className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded">
+          {displayValue ?? value}
+        </span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="slider-smooth w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer"
+      />
+    </div>
+  );
+}
+
+// Toggle component
+function Toggle({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: () => void;
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <button
+        onClick={onChange}
+        className={`relative w-11 h-6 rounded-full transition-all duration-200 ${
+          checked ? "bg-gray-900" : "bg-gray-200"
+        }`}
+      >
+        <span
+          className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+            checked ? "translate-x-5" : ""
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
+
 export function ControlPanel({
   textSettings,
   setTextSettings,
@@ -84,7 +154,7 @@ export function ControlPanel({
   resetAll,
 }: ControlPanelProps) {
   return (
-    <div className="w-80 bg-white border-r border-gray-200 flex flex-col h-full overflow-hidden">
+    <div className="w-96 bg-white rounded-2xl border border-gray-200/50 shadow-lg flex flex-col h-full overflow-hidden">
       {/* Header */}
       <div className="px-5 py-4 border-b border-gray-100">
         <h1 className="text-lg font-semibold text-gray-900">3D Text Generator</h1>
@@ -92,12 +162,12 @@ export function ControlPanel({
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-gray-100 px-2 pt-2 gap-1 overflow-x-auto">
+      <div className="flex border-b border-gray-100 px-3 pt-2 gap-1 overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-3 py-2 text-sm font-medium rounded-t-lg transition-colors whitespace-nowrap ${
+            className={`px-3 py-2 text-sm font-medium rounded-t-lg transition-all duration-200 whitespace-nowrap ${
               activeTab === tab.id
                 ? "bg-gray-100 text-gray-900"
                 : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
@@ -125,121 +195,68 @@ export function ControlPanel({
                 }
                 placeholder="Enter text..."
                 maxLength={20}
-                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow"
+                className="w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-shadow"
               />
-              <p className="text-xs text-gray-400 mt-1">{textSettings.text.length}/20 characters</p>
+              <p className="text-xs text-gray-400 mt-1.5">{textSettings.text.length}/20 characters</p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Font Size: {textSettings.fontSize.toFixed(1)}
-              </label>
-              <input
-                type="range"
-                min="0.3"
-                max="2"
-                step="0.1"
-                value={textSettings.fontSize}
-                onChange={(e) =>
-                  setTextSettings((prev) => ({ ...prev, fontSize: parseFloat(e.target.value) }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Font Size"
+              value={textSettings.fontSize}
+              min={0.3}
+              max={2}
+              step={0.1}
+              onChange={(v) => setTextSettings((prev) => ({ ...prev, fontSize: v }))}
+              displayValue={textSettings.fontSize.toFixed(1)}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Depth: {textSettings.depth.toFixed(2)}
-              </label>
-              <input
-                type="range"
-                min="0.1"
-                max="1"
-                step="0.05"
-                value={textSettings.depth}
-                onChange={(e) =>
-                  setTextSettings((prev) => ({ ...prev, depth: parseFloat(e.target.value) }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Depth"
+              value={textSettings.depth}
+              min={0.1}
+              max={1}
+              step={0.05}
+              onChange={(v) => setTextSettings((prev) => ({ ...prev, depth: v }))}
+              displayValue={textSettings.depth.toFixed(2)}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Letter Spacing: {textSettings.letterSpacing.toFixed(2)}
-              </label>
-              <input
-                type="range"
-                min="-0.1"
-                max="0.3"
-                step="0.01"
-                value={textSettings.letterSpacing}
-                onChange={(e) =>
-                  setTextSettings((prev) => ({ ...prev, letterSpacing: parseFloat(e.target.value) }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Letter Spacing"
+              value={textSettings.letterSpacing}
+              min={-0.1}
+              max={0.3}
+              step={0.01}
+              onChange={(v) => setTextSettings((prev) => ({ ...prev, letterSpacing: v }))}
+              displayValue={textSettings.letterSpacing.toFixed(2)}
+            />
 
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Bevel</label>
-              <button
-                onClick={() =>
-                  setTextSettings((prev) => ({ ...prev, bevelEnabled: !prev.bevelEnabled }))
-                }
-                className={`relative w-11 h-6 rounded-full transition-colors ${
-                  textSettings.bevelEnabled ? "bg-gray-900" : "bg-gray-200"
-                }`}
-              >
-                <span
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    textSettings.bevelEnabled ? "translate-x-5" : ""
-                  }`}
-                />
-              </button>
-            </div>
+            <Toggle
+              label="Bevel"
+              checked={textSettings.bevelEnabled}
+              onChange={() => setTextSettings((prev) => ({ ...prev, bevelEnabled: !prev.bevelEnabled }))}
+            />
 
             {textSettings.bevelEnabled && (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bevel Thickness: {textSettings.bevelThickness.toFixed(2)}
-                  </label>
-                  <input
-                    type="range"
-                    min="0.01"
-                    max="0.15"
-                    step="0.01"
-                    value={textSettings.bevelThickness}
-                    onChange={(e) =>
-                      setTextSettings((prev) => ({
-                        ...prev,
-                        bevelThickness: parseFloat(e.target.value),
-                      }))
-                    }
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-                  />
-                </div>
+                <Slider
+                  label="Bevel Thickness"
+                  value={textSettings.bevelThickness}
+                  min={0.01}
+                  max={0.15}
+                  step={0.01}
+                  onChange={(v) => setTextSettings((prev) => ({ ...prev, bevelThickness: v }))}
+                  displayValue={textSettings.bevelThickness.toFixed(2)}
+                />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Bevel Size: {textSettings.bevelSize.toFixed(2)}
-                  </label>
-                  <input
-                    type="range"
-                    min="0.01"
-                    max="0.1"
-                    step="0.005"
-                    value={textSettings.bevelSize}
-                    onChange={(e) =>
-                      setTextSettings((prev) => ({
-                        ...prev,
-                        bevelSize: parseFloat(e.target.value),
-                      }))
-                    }
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-                  />
-                </div>
+                <Slider
+                  label="Bevel Size"
+                  value={textSettings.bevelSize}
+                  min={0.01}
+                  max={0.1}
+                  step={0.005}
+                  onChange={(v) => setTextSettings((prev) => ({ ...prev, bevelSize: v }))}
+                  displayValue={textSettings.bevelSize.toFixed(2)}
+                />
               </>
             )}
           </>
@@ -257,10 +274,10 @@ export function ControlPanel({
                   <button
                     key={preset.id}
                     onClick={() => applyPreset(preset.id)}
-                    className="flex flex-col items-center gap-1 p-2 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                    className="flex flex-col items-center gap-1.5 p-2 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
                   >
                     <div
-                      className="w-6 h-6 rounded-full border border-gray-200"
+                      className="w-7 h-7 rounded-full border border-gray-200 shadow-sm"
                       style={{ backgroundColor: preset.color }}
                     />
                     <span className="text-xs text-gray-600">{preset.label}</span>
@@ -280,7 +297,7 @@ export function ControlPanel({
                     onClick={() =>
                       setMaterialSettings((prev) => ({ ...prev, type: type.id }))
                     }
-                    className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
+                    className={`px-3 py-2 text-sm rounded-lg border transition-all duration-200 ${
                       materialSettings.type === type.id
                         ? "border-gray-900 bg-gray-900 text-white"
                         : "border-gray-200 text-gray-700 hover:border-gray-300"
@@ -311,93 +328,53 @@ export function ControlPanel({
                   onChange={(e) =>
                     setMaterialSettings((prev) => ({ ...prev, color: e.target.value }))
                   }
-                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900"
+                  className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Roughness: {materialSettings.roughness.toFixed(2)}
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={materialSettings.roughness}
-                onChange={(e) =>
-                  setMaterialSettings((prev) => ({
-                    ...prev,
-                    roughness: parseFloat(e.target.value),
-                  }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Roughness"
+              value={materialSettings.roughness}
+              min={0}
+              max={1}
+              step={0.05}
+              onChange={(v) => setMaterialSettings((prev) => ({ ...prev, roughness: v }))}
+              displayValue={materialSettings.roughness.toFixed(2)}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Metalness: {materialSettings.metalness.toFixed(2)}
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.05"
-                value={materialSettings.metalness}
-                onChange={(e) =>
-                  setMaterialSettings((prev) => ({
-                    ...prev,
-                    metalness: parseFloat(e.target.value),
-                  }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Metalness"
+              value={materialSettings.metalness}
+              min={0}
+              max={1}
+              step={0.05}
+              onChange={(v) => setMaterialSettings((prev) => ({ ...prev, metalness: v }))}
+              displayValue={materialSettings.metalness.toFixed(2)}
+            />
 
             {materialSettings.type === "neon" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Glow Intensity: {materialSettings.emissiveIntensity.toFixed(1)}
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  value={materialSettings.emissiveIntensity}
-                  onChange={(e) =>
-                    setMaterialSettings((prev) => ({
-                      ...prev,
-                      emissiveIntensity: parseFloat(e.target.value),
-                    }))
-                  }
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-                />
-              </div>
+              <Slider
+                label="Glow Intensity"
+                value={materialSettings.emissiveIntensity}
+                min={0}
+                max={5}
+                step={0.1}
+                onChange={(v) => setMaterialSettings((prev) => ({ ...prev, emissiveIntensity: v }))}
+                displayValue={materialSettings.emissiveIntensity.toFixed(1)}
+              />
             )}
 
             {materialSettings.type === "glass" && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Opacity: {materialSettings.opacity.toFixed(2)}
-                </label>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="1"
-                  step="0.05"
-                  value={materialSettings.opacity}
-                  onChange={(e) =>
-                    setMaterialSettings((prev) => ({
-                      ...prev,
-                      opacity: parseFloat(e.target.value),
-                    }))
-                  }
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-                />
-              </div>
+              <Slider
+                label="Opacity"
+                value={materialSettings.opacity}
+                min={0.1}
+                max={1}
+                step={0.05}
+                onChange={(v) => setMaterialSettings((prev) => ({ ...prev, opacity: v }))}
+                displayValue={materialSettings.opacity.toFixed(2)}
+              />
             )}
           </>
         )}
@@ -405,66 +382,29 @@ export function ControlPanel({
         {/* Scene Tab */}
         {activeTab === "scene" && (
           <>
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Auto Rotate</label>
-              <button
-                onClick={() =>
-                  setSceneSettings((prev) => ({ ...prev, autoRotate: !prev.autoRotate }))
-                }
-                className={`relative w-11 h-6 rounded-full transition-colors ${
-                  sceneSettings.autoRotate ? "bg-gray-900" : "bg-gray-200"
-                }`}
-              >
-                <span
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    sceneSettings.autoRotate ? "translate-x-5" : ""
-                  }`}
-                />
-              </button>
-            </div>
+            <Toggle
+              label="Auto Rotate"
+              checked={sceneSettings.autoRotate}
+              onChange={() => setSceneSettings((prev) => ({ ...prev, autoRotate: !prev.autoRotate }))}
+            />
 
             {sceneSettings.autoRotate && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Rotation Speed: {sceneSettings.rotationSpeed.toFixed(1)}
-                </label>
-                <input
-                  type="range"
-                  min="0.1"
-                  max="2"
-                  step="0.1"
-                  value={sceneSettings.rotationSpeed}
-                  onChange={(e) =>
-                    setSceneSettings((prev) => ({
-                      ...prev,
-                      rotationSpeed: parseFloat(e.target.value),
-                    }))
-                  }
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-                />
-              </div>
+              <Slider
+                label="Rotation Speed"
+                value={sceneSettings.rotationSpeed}
+                min={0.1}
+                max={2}
+                step={0.1}
+                onChange={(v) => setSceneSettings((prev) => ({ ...prev, rotationSpeed: v }))}
+                displayValue={sceneSettings.rotationSpeed.toFixed(1)}
+              />
             )}
 
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Gradient Background</label>
-              <button
-                onClick={() =>
-                  setSceneSettings((prev) => ({
-                    ...prev,
-                    backgroundGradient: !prev.backgroundGradient,
-                  }))
-                }
-                className={`relative w-11 h-6 rounded-full transition-colors ${
-                  sceneSettings.backgroundGradient ? "bg-gray-900" : "bg-gray-200"
-                }`}
-              >
-                <span
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    sceneSettings.backgroundGradient ? "translate-x-5" : ""
-                  }`}
-                />
-              </button>
-            </div>
+            <Toggle
+              label="Gradient Background"
+              checked={sceneSettings.backgroundGradient}
+              onChange={() => setSceneSettings((prev) => ({ ...prev, backgroundGradient: !prev.backgroundGradient }))}
+            />
 
             {sceneSettings.backgroundGradient ? (
               <>
@@ -493,7 +433,7 @@ export function ControlPanel({
                           gradientColorTop: e.target.value,
                         }))
                       }
-                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     />
                   </div>
                 </div>
@@ -523,7 +463,7 @@ export function ControlPanel({
                           gradientColorBottom: e.target.value,
                         }))
                       }
-                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
                     />
                   </div>
                 </div>
@@ -554,50 +494,23 @@ export function ControlPanel({
                         backgroundColor: e.target.value,
                       }))
                     }
-                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-gray-900"
+                    className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm font-mono text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
                   />
                 </div>
               </div>
             )}
 
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Show Grid</label>
-              <button
-                onClick={() =>
-                  setSceneSettings((prev) => ({ ...prev, showGrid: !prev.showGrid }))
-                }
-                className={`relative w-11 h-6 rounded-full transition-colors ${
-                  sceneSettings.showGrid ? "bg-gray-900" : "bg-gray-200"
-                }`}
-              >
-                <span
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    sceneSettings.showGrid ? "translate-x-5" : ""
-                  }`}
-                />
-              </button>
-            </div>
+            <Toggle
+              label="Show Grid"
+              checked={sceneSettings.showGrid}
+              onChange={() => setSceneSettings((prev) => ({ ...prev, showGrid: !prev.showGrid }))}
+            />
 
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-gray-700">Show Shadow</label>
-              <button
-                onClick={() =>
-                  setSceneSettings((prev) => ({
-                    ...prev,
-                    showReflection: !prev.showReflection,
-                  }))
-                }
-                className={`relative w-11 h-6 rounded-full transition-colors ${
-                  sceneSettings.showReflection ? "bg-gray-900" : "bg-gray-200"
-                }`}
-              >
-                <span
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    sceneSettings.showReflection ? "translate-x-5" : ""
-                  }`}
-                />
-              </button>
-            </div>
+            <Toggle
+              label="Show Shadow"
+              checked={sceneSettings.showReflection}
+              onChange={() => setSceneSettings((prev) => ({ ...prev, showReflection: !prev.showReflection }))}
+            />
           </>
         )}
 
@@ -618,7 +531,7 @@ export function ControlPanel({
                         environmentPreset: preset.id,
                       }))
                     }
-                    className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
+                    className={`px-3 py-2 text-sm rounded-lg border transition-all duration-200 ${
                       lightingSettings.environmentPreset === preset.id
                         ? "border-gray-900 bg-gray-900 text-white"
                         : "border-gray-200 text-gray-700 hover:border-gray-300"
@@ -630,117 +543,70 @@ export function ControlPanel({
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Ambient Light: {lightingSettings.ambientIntensity.toFixed(1)}
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="2"
-                step="0.1"
-                value={lightingSettings.ambientIntensity}
-                onChange={(e) =>
-                  setLightingSettings((prev) => ({
-                    ...prev,
-                    ambientIntensity: parseFloat(e.target.value),
-                  }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Ambient Light"
+              value={lightingSettings.ambientIntensity}
+              min={0}
+              max={2}
+              step={0.1}
+              onChange={(v) => setLightingSettings((prev) => ({ ...prev, ambientIntensity: v }))}
+              displayValue={lightingSettings.ambientIntensity.toFixed(1)}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Directional Light: {lightingSettings.directionalIntensity.toFixed(1)}
-              </label>
-              <input
-                type="range"
-                min="0"
-                max="3"
-                step="0.1"
-                value={lightingSettings.directionalIntensity}
-                onChange={(e) =>
-                  setLightingSettings((prev) => ({
-                    ...prev,
-                    directionalIntensity: parseFloat(e.target.value),
-                  }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Directional Light"
+              value={lightingSettings.directionalIntensity}
+              min={0}
+              max={3}
+              step={0.1}
+              onChange={(v) => setLightingSettings((prev) => ({ ...prev, directionalIntensity: v }))}
+              displayValue={lightingSettings.directionalIntensity.toFixed(1)}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Light Position X: {lightingSettings.directionalPosition[0]}
-              </label>
-              <input
-                type="range"
-                min="-10"
-                max="10"
-                step="1"
-                value={lightingSettings.directionalPosition[0]}
-                onChange={(e) =>
-                  setLightingSettings((prev) => ({
-                    ...prev,
-                    directionalPosition: [
-                      parseFloat(e.target.value),
-                      prev.directionalPosition[1],
-                      prev.directionalPosition[2],
-                    ],
-                  }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Light Position X"
+              value={lightingSettings.directionalPosition[0]}
+              min={-10}
+              max={10}
+              step={1}
+              onChange={(v) =>
+                setLightingSettings((prev) => ({
+                  ...prev,
+                  directionalPosition: [v, prev.directionalPosition[1], prev.directionalPosition[2]],
+                }))
+              }
+              displayValue={String(lightingSettings.directionalPosition[0])}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Light Position Y: {lightingSettings.directionalPosition[1]}
-              </label>
-              <input
-                type="range"
-                min="-10"
-                max="10"
-                step="1"
-                value={lightingSettings.directionalPosition[1]}
-                onChange={(e) =>
-                  setLightingSettings((prev) => ({
-                    ...prev,
-                    directionalPosition: [
-                      prev.directionalPosition[0],
-                      parseFloat(e.target.value),
-                      prev.directionalPosition[2],
-                    ],
-                  }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Light Position Y"
+              value={lightingSettings.directionalPosition[1]}
+              min={-10}
+              max={10}
+              step={1}
+              onChange={(v) =>
+                setLightingSettings((prev) => ({
+                  ...prev,
+                  directionalPosition: [prev.directionalPosition[0], v, prev.directionalPosition[2]],
+                }))
+              }
+              displayValue={String(lightingSettings.directionalPosition[1])}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Light Position Z: {lightingSettings.directionalPosition[2]}
-              </label>
-              <input
-                type="range"
-                min="-10"
-                max="10"
-                step="1"
-                value={lightingSettings.directionalPosition[2]}
-                onChange={(e) =>
-                  setLightingSettings((prev) => ({
-                    ...prev,
-                    directionalPosition: [
-                      prev.directionalPosition[0],
-                      prev.directionalPosition[1],
-                      parseFloat(e.target.value),
-                    ],
-                  }))
-                }
-                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-gray-900"
-              />
-            </div>
+            <Slider
+              label="Light Position Z"
+              value={lightingSettings.directionalPosition[2]}
+              min={-10}
+              max={10}
+              step={1}
+              onChange={(v) =>
+                setLightingSettings((prev) => ({
+                  ...prev,
+                  directionalPosition: [prev.directionalPosition[0], prev.directionalPosition[1], v],
+                }))
+              }
+              displayValue={String(lightingSettings.directionalPosition[2])}
+            />
           </>
         )}
 
@@ -756,7 +622,7 @@ export function ControlPanel({
                   onClick={() =>
                     setExportSettings((prev) => ({ ...prev, format: "png" }))
                   }
-                  className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
+                  className={`px-4 py-2.5 text-sm rounded-lg border transition-all duration-200 ${
                     exportSettings.format === "png"
                       ? "border-gray-900 bg-gray-900 text-white"
                       : "border-gray-200 text-gray-700 hover:border-gray-300"
@@ -768,7 +634,7 @@ export function ControlPanel({
                   onClick={() =>
                     setExportSettings((prev) => ({ ...prev, format: "jpeg" }))
                   }
-                  className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
+                  className={`px-4 py-2.5 text-sm rounded-lg border transition-all duration-200 ${
                     exportSettings.format === "jpeg"
                       ? "border-gray-900 bg-gray-900 text-white"
                       : "border-gray-200 text-gray-700 hover:border-gray-300"
@@ -793,7 +659,7 @@ export function ControlPanel({
                         resolution: res as 1 | 2 | 4,
                       }))
                     }
-                    className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
+                    className={`px-3 py-2.5 text-sm rounded-lg border transition-all duration-200 ${
                       exportSettings.resolution === res
                         ? "border-gray-900 bg-gray-900 text-white"
                         : "border-gray-200 text-gray-700 hover:border-gray-300"
@@ -806,34 +672,22 @@ export function ControlPanel({
             </div>
 
             {exportSettings.format === "png" && (
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-700">
-                  Transparent Background
-                </label>
-                <button
-                  onClick={() =>
-                    setExportSettings((prev) => ({
-                      ...prev,
-                      transparentBackground: !prev.transparentBackground,
-                    }))
-                  }
-                  className={`relative w-11 h-6 rounded-full transition-colors ${
-                    exportSettings.transparentBackground ? "bg-gray-900" : "bg-gray-200"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                      exportSettings.transparentBackground ? "translate-x-5" : ""
-                    }`}
-                  />
-                </button>
-              </div>
+              <Toggle
+                label="Transparent Background"
+                checked={exportSettings.transparentBackground}
+                onChange={() =>
+                  setExportSettings((prev) => ({
+                    ...prev,
+                    transparentBackground: !prev.transparentBackground,
+                  }))
+                }
+              />
             )}
 
             <button
               onClick={onExport}
               disabled={isExporting}
-              className="w-full py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isExporting ? (
                 <>
@@ -876,17 +730,82 @@ export function ControlPanel({
             </button>
           </>
         )}
+
+
       </div>
 
       {/* Footer */}
       <div className="px-5 py-4 border-t border-gray-100">
         <button
           onClick={resetAll}
-          className="w-full py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+          className="w-full py-2.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200"
         >
           Reset All Settings
         </button>
       </div>
+
+      {/* Custom slider styles */}
+      <style jsx global>{`
+        .slider-smooth {
+          -webkit-appearance: none;
+          appearance: none;
+          background: linear-gradient(to right, #e5e7eb, #e5e7eb);
+          border-radius: 9999px;
+          height: 6px;
+          outline: none;
+          transition: all 0.2s ease;
+        }
+        
+        .slider-smooth:hover {
+          background: linear-gradient(to right, #d1d5db, #d1d5db);
+        }
+        
+        .slider-smooth::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #111827;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+          transition: all 0.15s ease;
+        }
+        
+        .slider-smooth::-webkit-slider-thumb:hover {
+          transform: scale(1.1);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+        }
+        
+        .slider-smooth::-webkit-slider-thumb:active {
+          transform: scale(0.95);
+        }
+        
+        .slider-smooth::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #111827;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+          transition: all 0.15s ease;
+        }
+        
+        .slider-smooth::-moz-range-thumb:hover {
+          transform: scale(1.1);
+        }
+        
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }

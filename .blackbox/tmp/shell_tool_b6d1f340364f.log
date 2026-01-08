@@ -11,3 +11,35 @@
  GET / 200 in 1131ms (compile: 1009ms, render: 121ms)
  GET / 200 in 26ms (compile: 3ms, render: 23ms)
  GET / 200 in 30ms (compile: 4ms, render: 26ms)
+✓ Compiled in 13ms
+✓ Compiled in 27ms
+ GET / 200 in 116ms (compile: 31ms, render: 85ms)
+✓ Compiled in 8ms
+✓ Compiled in 9ms
+✓ Compiled in 11ms
+✓ Compiled in 9ms
+✓ Compiled in 9ms
+ GET /opengraph-image 404 in 218ms (compile: 186ms, render: 32ms)
+ GET /opengraph-image 404 in 36ms (compile: 4ms, render: 32ms)
+ GET / 200 in 101ms (compile: 35ms, render: 66ms)
+✓ Compiled in 198ms
+ GET / 200 in 241ms (compile: 194ms, render: 48ms)
+ GET / 200 in 35ms (compile: 1579µs, render: 33ms)
+ GET / 200 in 32ms (compile: 3ms, render: 29ms)
+ GET / 200 in 31ms (compile: 1295µs, render: 30ms)
+ GET / 200 in 32ms (compile: 1387µs, render: 30ms)
+ GET / 200 in 25ms (compile: 1012µs, render: 24ms)
+ GET / 200 in 27ms (compile: 961µs, render: 26ms)
+ GET / 200 in 26ms (compile: 757µs, render: 25ms)
+ GET / 200 in 18ms (compile: 1309µs, render: 16ms)
+ GET / 200 in 8ms (compile: 981µs, render: 7ms)
+ GET / 200 in 44ms (compile: 15ms, render: 29ms)
+ GET / 200 in 11ms (compile: 1140µs, render: 10ms)
+ GET / 200 in 100ms (compile: 3ms, render: 98ms)
+ GET /opengraph-image 200 in 531ms
+ GET /opengraph-image 200 in 98ms
+ GET /opengraph-image 200 in 102ms
+ GET /opengraph-image 200 in 79ms
+ GET /opengraph-image 200 in 80ms
+ GET /opengraph-image 200 in 81ms
+ GET /opengraph-image 200 in 83ms

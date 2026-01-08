@@ -171,7 +171,6 @@ export function TextGenerator3D() {
 
     setIsExporting(true);
 
-    // Small delay to ensure the canvas is ready
     setTimeout(() => {
       const canvas = canvasRef.current;
       if (!canvas) {
@@ -182,7 +181,6 @@ export function TextGenerator3D() {
       try {
         const { format, resolution, transparentBackground } = exportSettings;
         
-        // Create a temporary canvas for higher resolution export
         const tempCanvas = document.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
         
@@ -197,7 +195,6 @@ export function TextGenerator3D() {
         tempCanvas.width = width;
         tempCanvas.height = height;
 
-        // Draw background if not transparent
         if (!transparentBackground || format === "jpeg") {
           if (sceneSettings.backgroundGradient) {
             const gradient = ctx.createLinearGradient(0, 0, 0, height);
@@ -210,10 +207,8 @@ export function TextGenerator3D() {
           ctx.fillRect(0, 0, width, height);
         }
 
-        // Draw the WebGL canvas
         ctx.drawImage(canvas, 0, 0, width, height);
 
-        // Create download link
         const mimeType = format === "png" ? "image/png" : "image/jpeg";
         const quality = format === "jpeg" ? 0.95 : undefined;
         const dataUrl = tempCanvas.toDataURL(mimeType, quality);
@@ -240,8 +235,8 @@ export function TextGenerator3D() {
   }, [sceneSettings.backgroundGradient, sceneSettings.gradientColorTop, sceneSettings.gradientColorBottom, sceneSettings.backgroundColor]);
 
   return (
-    <div className="flex h-screen w-full bg-white">
-      {/* Control Panel */}
+    <div className="flex h-screen w-full p-4 gap-4" style={backgroundStyle}>
+      {/* Control Panel - Detached with margins */}
       <ControlPanel
         textSettings={textSettings}
         setTextSettings={setTextSettings}
@@ -262,7 +257,7 @@ export function TextGenerator3D() {
       />
 
       {/* 3D Canvas */}
-      <div className="flex-1 relative" style={backgroundStyle}>
+      <div className="flex-1 relative rounded-2xl overflow-hidden bg-white/50 backdrop-blur-sm border border-gray-200/50 shadow-sm">
         <Canvas
           ref={canvasRef}
           camera={{ position: [0, 0, 5], fov: 50 }}
@@ -278,12 +273,12 @@ export function TextGenerator3D() {
         </Canvas>
 
         {/* Keyboard shortcuts hint */}
-        <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 text-xs text-gray-500 border border-gray-200">
+        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 text-xs text-gray-500 border border-gray-200/50 shadow-sm">
           <span className="font-medium">Controls:</span> Drag to rotate • Scroll to zoom • Shift+drag to pan
         </div>
 
         {/* Current text preview */}
-        <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-sm rounded-lg px-4 py-2 border border-gray-200">
+        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 border border-gray-200/50 shadow-sm">
           <span className="text-xs text-gray-500">Preview:</span>
           <span className="ml-2 font-medium text-gray-900">{textSettings.text || "Hello"}</span>
         </div>
