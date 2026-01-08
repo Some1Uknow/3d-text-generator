@@ -43,3 +43,37 @@
  GET /opengraph-image 200 in 80ms
  GET /opengraph-image 200 in 81ms
  GET /opengraph-image 200 in 83ms
+✓ Compiled in 12ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 974ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 642ms
+✓ Compiled in 8ms
+✓ Compiled in 5ms
+✓ Compiled in 7ms
+✓ Compiled in 13ms
+✓ Compiled in 13ms
+✓ Compiled in 19ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 831ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 637ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 639ms
+✓ Compiled in 15ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 1080ms
+✓ Compiled in 11ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 829ms
+✓ Compiled in 10ms
+✓ Compiled in 6ms
+✓ Compiled in 14ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 1109ms
+✓ Compiled in 9ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 819ms
+✓ Compiled in 15ms
+Expected style "zIndex: 1px" to be unitless
+ GET /opengraph-image 200 in 796ms
