@@ -77,3 +77,12 @@ Expected style "zIndex: 1px" to be unitless
 ✓ Compiled in 15ms
 Expected style "zIndex: 1px" to be unitless
  GET /opengraph-image 200 in 796ms
+ GET / 200 in 175ms (compile: 53ms, render: 121ms)
+ GET / 200 in 41ms (compile: 2ms, render: 39ms)
+ GET / 200 in 27ms (compile: 3ms, render: 25ms)
+✓ Compiled in 16ms
+ GET / 200 in 33ms (compile: 3ms, render: 30ms)
+✓ Compiled in 7ms
+✓ Compiled in 46ms
+ GET / 200 in 140ms (compile: 34ms, render: 105ms)
+ GET / 200 in 28ms (compile: 4ms, render: 24ms)

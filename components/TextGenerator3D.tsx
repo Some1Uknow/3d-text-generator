@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Scene3D } from "./Scene3D";
 import { ControlPanel } from "./ControlPanel";
+import { GitHubStarBadge } from "./GitHubStarBadge";
 
 export type MaterialType = "metallic" | "chrome" | "gold" | "glass" | "neon" | "plastic";
 export type EnvironmentPreset = "studio" | "sunset" | "dawn" | "night" | "warehouse" | "city";
@@ -271,6 +272,9 @@ export function TextGenerator3D() {
             lightingSettings={lightingSettings}
           />
         </Canvas>
+
+        {/* GitHub Star Badge - Top Right */}
+        <GitHubStarBadge />
 
         {/* Keyboard shortcuts hint */}
         <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 text-xs text-gray-500 border border-gray-200/50 shadow-sm">
