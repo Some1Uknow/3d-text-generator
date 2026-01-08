@@ -1,0 +1,13 @@
+
+> saas-ui@0.1.0 dev /Users/raghavsharma/Documents/saas-ui
+> next dev
+
+▲ Next.js 16.1.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.2:3000
+
+✓ Starting...
+✓ Ready in 319ms
+ GET / 200 in 1131ms (compile: 1009ms, render: 121ms)
+ GET / 200 in 26ms (compile: 3ms, render: 23ms)
+ GET / 200 in 30ms (compile: 4ms, render: 26ms)
